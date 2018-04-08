@@ -129,6 +129,117 @@ PC_2 = [ 14, 17, 11, 24,  1,  5,
          46, 42, 50, 36, 29, 32
 ]
 
+
+def change_ip(n):
+    '''
+    :param n: a string or list which will be changed by ip
+    :return: a string
+    '''
+    k_list = []
+    #for i in range(0, len(n), 7):
+    #    a = n[i:i + 7]
+    #    if a.count('1') % 2 == 0:
+    #        a += '0'
+    #    else:
+    #        a += '1'
+    #    k_list.append(a)
+    #n = ''.join(k_list)
+    # print(n)
+    
+    f_list = ['0' for i in range(64)]
+    for i in range(64):
+        f_list[i] = n[IP[i] - 1]
+    
+    return ''.join(f_list)
+
+
+def change_ip_1(n):
+    '''
+
+    :param n: string
+    :return:  string
+    '''
+    f_list = ['0' for i in range(64)]
+    for i in range(64):
+        f_list[i] = n[IP_1[i] - 1]
+    
+    return ''.join(f_list)
+
+
+def get_L_R(n):
+    return n[:32], n[32:]
+
+
+# The Feistel (F) function
+
+def extend_change(r):
+    '''
+    input 8*4=32bits and output 8*6=48bits input is r(i-1)
+    :param r: string
+    :return: string
+    '''
+    f_list = ['0' for i in range(48)]
+    for i in range(48):
+        f_list[i] = r[extend_table[i] - 1]
+    
+    return ''.join(f_list)
+
+
+def xor_key(e_f, key):
+    f_list = []
+    for i in range(len(e_f)):
+        a = str(int(e_f[i]) ^ int(key[i]))
+        f_list.append(a)
+    return ''.join(f_list)
+
+
+def s_exchange(x_f):
+    '''
+    input 8*6 = 48bits and output 8*4 = 32bits s exchange box
+    :return: string
+    '''
+    x_list = [x_f[i:i + 6] for i in range(0, 48, 6)]
+    r_f = ""
+    for i in range(len(x_list)):
+        x_cols = int(x_list[i][0] + x_list[i][5], 2)
+        x_rows = int(x_list[i][1:5], 2)
+        x_nums = x_cols * 16 + x_rows
+        s_e = bin(S[i][x_nums])[2:]
+        for i in range(4 - len(s_e)):
+            s_e = '0' + s_e
+        r_f += s_e
+        # print(x_list[i],x_cols,x_rows,s_e)
+    
+    return r_f
+
+
+def p_exchange(x_f):
+    '''
+    input 32bits and output 32bits which like ip exchange
+    :param x_f: string
+    :return: string
+    '''
+    f_list = ['0' for i in range(32)]
+    for i in range(32):
+        f_list[i] = x_f[P[i] - 1]
+    return ''.join(f_list)
+
+
+def xor_pf_l(p_f, L):
+    '''
+    after p box exchange the result xor with l(i-1) to output r(i)
+    :param p_f:
+    :param L:
+    :return:
+    '''
+    f_list = []
+    for i in range(32):
+        f_num = str(int(p_f[i]) ^ int(L[i]))
+        f_list.append(f_num)
+    
+    return ''.join(f_list)
+
+
 # the key extend
 def key_extend(k):
     '''
@@ -138,16 +249,14 @@ def key_extend(k):
     '''
     f_cd_list = ['0' for i in range(56)]
     k_list = []
-    for i in range(0, len(k), 7):
-        a = k[i:i + 7]
-        if a.count('1') % 2 == 0:
+    for i in range(0,len(k),7):
+        a = k[i:i+7]
+        if a.count('1')%2 == 0 :
             a += '0'
         else:
             a += '1'
         k_list.append(a)
     k = ''.join(k_list)
-    
-    print(k)
     
     for i in range(56):
         f_cd_list[i] = k[PC_1[i] - 1]
@@ -179,6 +288,20 @@ def key_extend(k):
 
 
 a = '11111111000000000000000000000000000000000000000000000000'
-print(a)
+m1 = "0000000000000000000000000000000000000000000000000000000000000000"
+m2 = "1000000000000000000000000000000000000000000000000000000000000000"
 k = key_extend(a)
-print(k)
+print(len(k))
+
+c_f = change_ip(m2)
+print(c_f)
+r = c_f[32:]
+print(r)
+e_f = extend_change(c_f)
+print(e_f)
+x_f = xor_key(e_f,k[0])
+print(x_f)
+s_f = s_exchange(x_f)
+p_f = p_exchange(s_f)
+x_f = xor_pf_l(p_f,c_f[:32])
+print(x_f)

@@ -138,7 +138,7 @@ def chr_to_bin(char):
     s = bin(ord(char))[2:]
     l = 8 - len(s)
     f_list = []
-    for i in range(l-1):
+    for i in range(l):
         f_list.append('0')
     for j in s:
         f_list.append(j)
@@ -274,15 +274,15 @@ def key_extend(k):
     :return: a list had 16 keys
     '''
     f_cd_list = ['0' for i in range(56)]
-    k_list = []
-    for i in range(0,len(k),7):
-        a = k[i:i+7]
-        if a.count('1')%2 == 0 :
-            a += '0'
-        else:
-            a += '1'
-        k_list.append(a)
-    k = ''.join(k_list)
+    #k_list = []
+    #for i in range(0,len(k),7):
+    #    a = k[i:i+7]
+    #    if a.count('1')%2 == 0 :
+    #        a += '0'
+    #    else:
+    #        a += '1'
+    #    k_list.append(a)
+    #k = ''.join(k_list)
     
     
     for i in range(56):
@@ -323,13 +323,13 @@ def des_encrypt(crypto,key):
     if len(key) != 8:
         return False
     crypto = str_to_bin(crypto)
-    c_p = len(crypto)%56
+    print(crypto)
+    c_p = len(crypto)%64
     if c_p != 0:
         crypto += '0'*(56-c_p)
     key = str_to_bin(key)
+    print(len(key))
     key_list = key_extend(key)
-    #print(crypto)
-    print(len(key_list))
     L_R = change_ip(crypto)
     l,r = get_L_R(L_R)
     L = [l]
