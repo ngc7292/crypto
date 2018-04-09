@@ -21,7 +21,12 @@ __mtime__ = '2018/4/4'
 """
 
 import random
+from flask import Flask,render_template,request,jsonify
 
+app = Flask()
+
+app.jinja_env.variable_start_string = '{{{{'
+app.jinja_env.variable_end_string = '}}}}'
 
 def gcd(n1, n2):
     if n1 < n2:
@@ -65,4 +70,23 @@ def rsa_decrypt(c, d, n):
     return (c**d)%n
 
 
+@app.route('/encrypto', methods=['GET'])
+def encrypto():
+    if request.method == "GET":
+        types = request.args.get('type')
+        n = request.args.get('n')
+        e = request.args.get('e')
+        m = request.args.get('m')
+        
+    else:
+        return jsonify({'status':False})
+
+
+@app.route("/")
+def d():
+    return render_template("rsa.html")
+
+
+if __name__ == '__main__':
+    app.run()
 

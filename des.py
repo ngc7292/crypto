@@ -360,13 +360,19 @@ def des_encrypt(crypto,key):
     return m
 
 def des_decrypto(crypto,key):
+    '''
+    
+    :param crypto: a 64bits 01 string
+    :param key:
+    :return:
+    '''
     if len(key) != 8:
         return False
     key = str_to_bin(key)
     
     key_list = key_extend(key)
     
-
+    
 
 if __name__ == '__main__':
     key = 'abcdefgh'

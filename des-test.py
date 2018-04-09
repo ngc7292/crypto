@@ -305,3 +305,12 @@ s_f = s_exchange(x_f)
 p_f = p_exchange(s_f)
 x_f = xor_pf_l(p_f,c_f[:32])
 print(x_f)
+
+def caesar_other(string,offset):
+    f_list = []
+    for i in string:
+        a = ord(i)
+        f_list.append(chr((a - 32 + offset) % 94 + 32))
+    return ''.join(f_list)
+
+print(caesar_other("asfdvvs121214~",12))
