@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>发送AJAX请求</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/foundation/6.3.1/css/foundation.min.css">
+    <script>
+        // ES6 模板字符串
+//Vue.config.delimiters = ['${', '}'];
+// 修改文本插值的定界符。
+
+//Vue.config.unsafeDelimiters = ['{!!', '!!}'];
+// 修改原生 HTML 插值的定界符。
+    </script>
+</head>
+    <body>
+        <div class="container" id="encrypto">
+            <select v-model="type">
+                <option value="1">encrypt english only</option>
+                <option value="2">encrypt</option>
+                <option value="3">decrypt english</option>
+                <option value="4">decrypt</option>
+            </select>
+            <input type="text" name="string" placeholder="please input some string" v-model="string">
+            <input type="text" name="offset" placeholder="please input some offset" v-model="offset">
+            <p>{{ result }}</p>
+            <button type="submit" v-on:click="encrypt"> submit </button>
+        </div>
+        <script>
+var app = new Vue({
+    el:'#encrypto',
+    data:{
+        result:"here is result",
+        type:"",
+        string:"",
+        offset:"",
+    },
+    methods:{
+        encrypt:function (event) {
+            console.log("string="+app.$data.string+"&offset="+app.$data.offset);
+            axios.get(
+                'http://127.0.0.1:5000/encrypto?type='+app.$data.type+'&string='+app.$data.string+'&offset='+app.$data.offset,
+            ).then(function (request) {
+                    app.$data.result = request['data']['message'];
+                    console.log(request);
+                }).catch(function (error) {
+                console.log(error);a
+            });
+        }
+    }
+});
+    </script>
+    </body>
+</html>

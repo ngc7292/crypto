@@ -157,7 +157,7 @@ def bin_to_hex(s):
     :param s:
     :return:
     '''
-    
+    pass
 # ip exchange
     
 def change_ip(n):
@@ -165,15 +165,15 @@ def change_ip(n):
     :param n: a string or list which will be changed by ip
     :return: a string
     '''
-    k_list = []
-    for i in range(0,len(n),7):
-        a = n[i:i+7]
-        if a.count('1')%2 == 0 :
-            a += '0'
-        else:
-            a += '1'
-        k_list.append(a)
-    n = ''.join(k_list)
+    #k_list = []
+    #for i in range(0,len(n),7):
+    #    a = n[i:i+7]
+    #    if a.count('1')%2 == 0 :
+    #        a += '0'
+    #    else:
+    #        a += '1'
+    #    k_list.append(a)
+    #n = ''.join(k_list)
     #print(n)
     
     f_list = ['0' for i in range(64)]
@@ -290,6 +290,8 @@ def key_extend(k):
         
     f_cd = "".join(f_cd_list)
     
+    print(f_cd)
+    
     # C,D is string's list
     C = [f_cd[:28]]
     D = [f_cd[28:]]
@@ -297,20 +299,20 @@ def key_extend(k):
     k_list = []
     for i in range(16):
         if i+1 in [1,2,9,16]:
-            c = C[i][1:]+'0'
-            d = D[i][1:]+'0'
+            c = C[i][1:]+C[i][0]
+            d = D[i][1:]+D[i][0]
         else:
-            c = C[i][2:]+'00'
-            d = D[i][2:]+'00'
+            c = C[i][2:]+C[i][:2]
+            d = D[i][2:]+D[i][:2]
         C.append(c)
         D.append(d)
         F_CD.append(c+d)
         cd = c+d
-        k = ""
+        k_l = ""
         for i in range(48):
-            k += cd[PC_2[i]-1]
-        k_list.append(k)
-    
+            k_l += cd[PC_2[i]-1]
+        k_list.append(k_l)
+    print(k_list)
     return k_list
 
 def des_encrypt(crypto,key):
@@ -323,15 +325,20 @@ def des_encrypt(crypto,key):
     if len(key) != 8:
         return False
     crypto = str_to_bin(crypto)
-    print(crypto)
+
+
     c_p = len(crypto)%64
     if c_p != 0:
-        crypto += '0'*(56-c_p)
+        crypto += '0'*(64-c_p)
+    
     key = str_to_bin(key)
-    print(len(key))
+    
     key_list = key_extend(key)
+    
     L_R = change_ip(crypto)
+    
     l,r = get_L_R(L_R)
+    
     L = [l]
     R = [r]
     for i in range(16):
@@ -352,13 +359,18 @@ def des_encrypt(crypto,key):
     
     return m
 
-
-
+def des_decrypto(crypto,key):
+    if len(key) != 8:
+        return False
+    key = str_to_bin(key)
+    
+    key_list = key_extend(key)
+    
 
 
 if __name__ == '__main__':
     key = 'abcdefgh'
-    a = 'aaaaaaaa'
+    a = '00000000'
     c = des_encrypt(a,key)
     print(c)
     
